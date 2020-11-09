@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="master :: header"></head>
+<body class="bg-muted">
+<div th:replace="master :: navbar"></div>
+
+<!--Show_Table_Start-->
+<div class="container mt-5">
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Table Name</th>
+            <th scope="col">Food Name</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Type</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="co : ${co}" th:if="${co.c_status} == 2 OR ${co.c_status} == 3">
+            <td th:text="${co.id}"></td>
+            <td th:text="${co.t_name}"></td>
+            <td th:text="${co.f_name}"></td>
+            <td th:text="${co.qty}"></td>
+            <td th:text="${co.type}"></td>
+            <td>
+                <a th:href="'/takesent/'+${co.id}">
+                    <button
+                            th:class="${co.c_status}==2 ? 'btn btn-primary' : 'btn btn-secondary'">Take
+                        & Sent
+                    </button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!--Show_Table_End-->
+
+<div th:replace="master :: footer"></div>
+</body>
+
+</html>

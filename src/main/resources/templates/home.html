@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="master :: header"></head>
+<body class="bg-muted">
+<div th:replace="master :: navbar"></div>
+
+<div class="container mt-3">
+    <table class="table table-striped">
+        <thead class="thead-dark text-center">
+        <tr>
+            <th scope="col"><a href="/rule" class="btn btn-primary btn-lg">
+                <i class="fa fa-bars mr-2" aria-hidden="true"></i>Rule
+            </a></th>
+            <th scope="col"><a href="/order" class="btn btn-primary btn-lg">
+                <i class="fa fa-first-order mr-2" aria-hidden="true"></i>Order
+            </a>
+            </th>
+            <th scope="col"><a href="/waiter" class="btn btn-primary btn-lg">
+                <i class="fa fa-users mr-2" aria-hidden="true"></i>Waiter
+            </a></th>
+            <th scope="col"><a href="/kitchen" class="btn btn-primary btn-lg">
+                <i class="fa fa-first-order mr-2" aria-hidden="true"></i></i>Kitchen
+            </a></th>
+            <th scope="col"><a href="/food" class="btn btn-primary btn-lg">
+                <i class="fa fa-cutlery mr-2" aria-hidden="true"></i>Food
+            </a></th>
+            <th scope="col"><a href="/table" class="btn btn-primary btn-lg">
+                <i class="fa fa-plus-square-o mr-2" aria-hidden="true"></i>Table
+            </a></th>
+        </tr>
+        </thead>
+    </table>
+</div>
+
+<!--Show_Rule_Start-->
+<div class="container mt-5">
+    <div class="h1 text-center text-warning">ဝန်ထမ်းများလိုက်နာရန်စည်းကမ်းချက်များ</div>
+    <br>
+    <table class="table table-striped">
+        <thead class="thead-dark text-center">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="rule : ${rule}" class="text-center" th:if="${rule.status} == enable">
+            <td th:text="${rule.id}"></td>
+            <td th:text="${rule.rule}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!--Show_Rule_End-->
+
+<div th:replace="master :: footer"></div>
+</body>
+
+</html>

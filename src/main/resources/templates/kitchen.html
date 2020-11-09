@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="master :: header"></head>
+<body class="bg-muted">
+
+<div th:replace="master :: navbar"></div>
+
+<!--Show_Table_Start-->
+<div class="container mt-5">
+    <table class="table table-striped">
+        <thead class="thead-dark text-center">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Table Name</th>
+            <th scope="col">Food Name</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Type</th>
+            <th scope="col">Comment</th>
+            <th scope="col">Cooking Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="co : ${co}" th:if="${co.c_status} != 4" class="text-center">
+            <td th:text="${co.id}"></td>
+            <td th:text="${co.t_name}"></td>
+            <td th:text="${co.f_name}"></td>
+            <td th:text="${co.qty}"></td>
+            <td th:text="${co.type} == shop ? 'ဆိုင်ထိုင်စား' : 'ပါဆယ်'"></td>
+            <td th:text="${co.cmt}"></td>
+            <td>
+                <a th:href="'/neworder/'+${co.id}"><button th:if="${co.c_status}==0" class="btn btn-primary">New
+                    Order</button>
+                <a th:href="'/cook/'+${co.id}"><button th:if="${co.c_status}==1"
+                                                       class="btn btn-secondary">Cooking Now</button>
+                </a>
+                    <button th:if="${co.c_status}==2"
+                            class="btn btn-secondary">Ready</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!--Show_Table_End-->
+
+<div th:replace="master :: footer"></div>
+</body>
+
+</html>

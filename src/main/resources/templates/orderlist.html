@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="master :: header"></head>
+<body class="bg-muted">
+<div th:replace="master :: navbar"></div>
+
+<!--Show_Order_List_Start-->
+<div class="row container-fluid">
+    <div class="mt-5 col-8">
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col" class="text-center">ID</th>
+                <th scope="col" class="text-center">Name</th>
+                <th scope="col" class="text-center">Price</th>
+                <th scope="col" class="text-center">Amount</th>
+                <th scope="col" class="text-center">Type</th>
+                <th scope="col" class="text-center">Comment</th>
+                <th scope="col" class="text-center">Pre-Order</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="fd : ${fd}" th:if="${fd.status} == enable" class="align-middle">
+                <form class="form-group" action="/preorder" method="post">
+                    <input type="hidden" name="tid" th:value="${table.id}">
+                    <td class="text-center" th:text="${fd.id}"></td>
+                    <input type="hidden" name="fid" th:value="${fd.id}">
+                    <td class="text-center" th:text="${fd.name}"></td>
+                    <input type="hidden" name="name" th:value="${fd.name}">
+                    <td class="text-center" th:text="'$ '+${fd.price}"></td>
+                    <input type="hidden" name="price" th:value="${fd.price}">
+                    <td>
+                        <input type="number" name="qty" min="1" value="1" style="width: 1.5cm">
+                    </td>
+                    <td>
+                        <select id="type" name="type">
+                            <option value="shop">ဆိုင်ထိုင်စား</option>
+                            <option value="parcel">ပါဆယ်</option>
+                        </select>
+                    </td>
+                    <td><input type="text" name="cmt" placeholder="eg.အစပ်လျော့" min="1" max="150"></td>
+                    <td class="text-center">
+                        <button type="submit" class="btn btn-primary btn-sm rounded-pill text-center">Pre-Order</button>
+                    </td>
+                </form>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-5 col-4 bg-light border">
+        <h3 class="text-center">TAK Restaurant</h3>
+        <h5 class="border-bottom" th:text="${table.name}"></h5>
+        <table class="table table-sm" id="table">
+            <thead class="bg-info">
+            <tr>
+                <th scope="col" class="text-center">Name</th>
+                <th scope="col" class="text-center">Price</th>
+                <th scope="col" class="text-center">Amount</th>
+                <th scope="col" class="text-center">Total</th>
+                <th scope="col" class="text-center">Edit</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="preorder : ${preorder}" th:if="${preorder.tid} == ${table.id} AND ${preorder.paid_status} == 0"
+                class="align-middle">
+                <td class="text-center" th:text="${preorder.f_name}"></td>
+                <td class="text-center" th:text="'$ '+${preorder.f_price}"></td>
+                <td class="text-center" th:text="${preorder.amount}"></td>
+                <td class="text-center" th:text="${preorder.f_price}*${preorder.amount}"></td>
+                <td class="text-center">
+                    <button class="btn btn-primary btn-sm rounded-pill text-center" data-toggle="modal"
+                            th:data-target="'#editorder'+${preorder.id}">
+                        <i class="fa fa-pencil" aria-hidden="true"></i>Edit
+                    </button>
+                    <!--Edit_Table_Start-->
+                    <div class="modal fade" th:id="'editorder'+${preorder.id}" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-content form-elegant" tabindex="-1" role="dialog"
+                             aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div>
+                                <div class="btn close" data-dismiss="modal" aria-label="Close">&times;</div>
+                                <div class="form-group">
+                                    <form class="container" action="/editamount" method="post">
+                                        <input type="hidden" th:value="${preorder.id}" name="id">
+                                        <input type="hidden" th:value="${table.id}" name="tid">
+                                        <label class="h3" for="amount">Edit Amount</label><br>
+                                        <span th:text="'Food Name : '+${preorder.f_name}"></span><br>
+                                        <span th:text="'Price : '+${preorder.f_price}"></span>
+                                        <input type="number" class="form-control" id="amount" name="qty"
+                                               th:placeholder="${preorder.amount}" min="0" required>
+                                        <button type="submit" class="btn btn-primary mb-3">Save
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Edit_Table_End-->
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-center h4">
+            <span>Total :&nbsp;</span>
+            <span id="val"></span>
+        </div>
+        <div>
+            <a th:href="'/confirmorder/'+${table.id}" class="d-flex justify-content-center">
+                <button class="btn btn-primary btn-lg rounded-pill">Confirm Order</button>
+            </a>
+        </div>
+    </div>
+</div>
+<script>
+
+    var table = document.getElementById("table"), sumVal = 0;
+
+    for (var i = 1; i < table.rows.length; i++) {
+        sumVal = sumVal + parseInt(table.rows[i].cells[3].innerHTML);
+    }
+
+    document.getElementById("val").innerHTML = sumVal;
+    console.log(sumVal);
+</script>
+<div th:replace="master :: footer"></div>
+</body>
+</html>

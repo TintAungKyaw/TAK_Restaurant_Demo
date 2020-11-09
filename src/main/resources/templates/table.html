@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="master :: header"></head>
+<body class="bg-muted">
+<div th:replace="master :: navbar"></div>
+
+<!--Create_Table_Start-->
+<div class="modal fade" id="Create_Table" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-content form-elegant" tabindex="-1"
+         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div>
+            <div class="btn close" data-dismiss="modal" aria-label="Close">&times;</div>
+            <h1 class="text-center mt-3">Create Table Here</h1>
+            <form class="container" action="/cft" method="post">
+                <div class="form-group ">
+                    <label for="name">Table Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Table Name"
+                           required>
+                </div>
+                <div>
+                    <label>Status</label>
+                    <div class="row">
+                        <div class="form-check col-4 text-center">
+                            <input class="form-check-input" type="radio" name="status" id="enable" value="enable"
+                                   checked="checked" required>
+                            <label class="form-check-label" for="enable">
+                                Enable
+                            </label>
+                        </div>
+                        <div class="form-check col-4 text-center">
+                            <input class="form-check-input" type="radio" name="status" id="disable" value="disable"
+                                   required>
+                            <label class="form-check-label" for="disable">
+                                Disable
+                            </label>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <button type="submit" class="btn btn-primary float-right mb-3">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+<!--Create_Table_End-->
+
+<!--Show_Table_Start-->
+<div class="container mt-5">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+        <tr class="text-center">
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Status</th>
+            <th scope="col">Edit & Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tList : ${tList}" class="text-center">
+            <td th:text="${tList.id}"></td>
+            <td th:text="${tList.name}"></td>
+            <td>
+                <a th:href="@{'/status/'+${tList.id}}">
+                    <button th:if="${tList.status} == enable" type="button" class="btn btn-primary">On</button>
+                    <button th:if="${tList.status} == disable" type="button" class="btn btn-secondary">Off</button>
+                </a>
+            </td>
+            <td><a>
+                <button class="btn btn-success" data-toggle="modal"
+                        th:data-target="'#Edit_Table'+${tList.id}">
+                    <i class="fa fa-pencil mr-2" aria-hidden="true"></i>Edit
+                </button>
+            </a>
+                <!--Edit_Table_Start-->
+                <div class="modal fade" th:id="'Edit_Table'+${tList.id}" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-content form-elegant" tabindex="-1"
+                         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div>
+                            <div class="btn close" data-dismiss="modal" aria-label="Close">&times;</div>
+                            <h1 class="text-center mt-3">Edit Table Here</h1>
+                            <form class="container" action="/edittable" method="post">
+                                <div class="form-group ">
+                                    <label for="name">Table Name</label>
+                                    <input type="text" class="form-control" id="name" name="name"
+                                           placeholder="Table Name" th:value="${tList.name}"
+                                           required>
+                                </div>
+                                <div>
+                                    <div class="row">
+                                        <div class="form-check col-4 text-center">
+                                            <input type="hidden" name="id" th:value="${tList.id}">
+                                            <input th:if="${tList.status} == enable" class="form-check-input"
+                                                   type="radio" name="status" id="enable" value="enable" checked
+                                                   required>
+                                            <input th:if="${tList.status} != enable" class="form-check-input"
+                                                   type="radio" name="status" id="enable" value="enable"
+                                                   required>
+                                            <label class="form-check-label" for="enable">
+                                                Enable
+                                            </label>
+                                        </div>
+                                        <div class="form-check col-4 text-center">
+                                            <input th:if="${tList.status} == disable" class="form-check-input"
+                                                   type="radio"
+                                                   name="status"
+                                                   id="disable"
+                                                   value="disable"
+                                                   checked
+                                                   required>
+                                            <input th:if="${tList.status} != disable" class="form-check-input"
+                                                   type="radio"
+                                                   name="status"
+                                                   id="disable"
+                                                   value="disable"
+                                                   required>
+                                            <label class="form-check-label" for="disable">
+                                                Disable
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </div>
+                                <button type="submit" class="btn btn-primary float-right mb-3">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--Edit_Table_End-->
+                <a th:href="@{'/deletetable/'+${tList.id}}">
+                    <button class="btn btn-danger">
+                        <i class="fa fa-trash-o mr-2" aria-hidden="true"></i>Delete
+                    </button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!--Show_Table_End-->
+
+<div th:replace="master :: footer"></div>
+</body>
+</html>

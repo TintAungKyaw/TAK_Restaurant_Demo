@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="master :: header"></head>
+<body class="bg-muted">
+<div th:replace="master :: navbar"></div>
+
+<!--Create_Food_Start-->
+<div class="modal fade" id="Create_Table" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-content form-elegant" tabindex="-1"
+         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div>
+            <div class="btn close" data-dismiss="modal" aria-label="Close">&times;</div>
+            <h1 class="text-center mt-3">Create Food Here</h1>
+            <form class="container" action="/cf" method="post">
+                <div class="form-group ">
+                    <label for="name">Food Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Food Name"
+                           required>
+                </div>
+                <div class="form-group ">
+                    <label for="price">Food Price</label>
+                    <input type="number" class="form-control" id="price" name="price" placeholder="Food Price $$$"
+                           required>
+                </div>
+                <div>
+                    <label>Status</label>
+                    <div class="row">
+                        <div class="form-check col-4 text-center">
+                            <input class="form-check-input" type="radio" name="status" id="enable" value="enable"
+                                   checked="checked" required>
+                            <label class="form-check-label" for="enable">
+                                Enable
+                            </label>
+                        </div>
+                        <div class="form-check col-4 text-center">
+                            <input class="form-check-input" type="radio" name="status" id="disable" value="disable"
+                                   required>
+                            <label class="form-check-label" for="disable">
+                                Disable
+                            </label>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <button type="submit" class="btn btn-primary float-right mb-3">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+<!--Create_Food_End-->
+
+<!--Show_Food_Start-->
+<div class="container mt-5">
+    <table class="table table-striped">
+        <thead class="thead-dark text-center">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Status</th>
+            <th scope="col">Edit</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="fList : ${fList}" class="text-center">
+            <td th:text="${fList.id}"></td>
+            <td th:text="${fList.name}"></td>
+            <td th:text="${fList.price}"></td>
+            <td>
+                <a th:href="@{'/foodstatus/'+${fList.id}}">
+                    <button th:if="${fList.status} == enable" type="button" class="btn btn-primary">On</button>
+                    <button th:if="${fList.status} == disable" type="button" class="btn btn-secondary">Off</button>
+                </a>
+            </td>
+            <td>
+                <button class="btn btn-success" data-toggle="modal"
+                        th:data-target="'#Edit_Food'+${fList.id}">
+                    <i class="fa fa-pencil mr-2" aria-hidden="true"></i>Edit
+                </button>
+                <!--                Edit_Table_Start-->
+                <div class="modal fade" th:id="'Edit_Food'+${fList.id}" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-content form-elegant" tabindex="-1"
+                         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div>
+                            <div class="btn close" data-dismiss="modal" aria-label="Close">&times;</div>
+                            <h1 class="text-center mt-3">Edit Food Here</h1>
+                            <form class="container" action="/editfood" method="post">
+                                <div class="form-group ">
+                                    <label for="name">Food Name</label>
+                                    <input type="text" class="form-control" id="name" name="name"
+                                           placeholder="Food Name" th:value="${fList.name}"
+                                           required>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="price">Food Price</label>
+                                    <input type="number" class="form-control" id="price" name="price"
+                                           placeholder="Food Price $$$"
+                                           th:value="${fList.price}" required>
+                                </div>
+                                <div>
+                                    <div class="row">
+                                        <div class="form-check col-4 text-center">
+                                            <input type="hidden" name="id" th:value="${fList.id}">
+                                            <input th:if="${fList.status} == enable" class="form-check-input"
+                                                   type="radio" name="status" id="enable" value="enable" checked
+                                                   required>
+                                            <input th:if="${fList.status} != enable" class="form-check-input"
+                                                   type="radio" name="status" id="enable" value="enable"
+                                                   required>
+                                            <label class="form-check-label" for="enable">
+                                                Enable
+                                            </label>
+                                        </div>
+                                        <div class="form-check col-4 text-center">
+                                            <input th:if="${fList.status} == disable" class="form-check-input"
+                                                   type="radio"
+                                                   name="status"
+                                                   id="disable"
+                                                   value="disable"
+                                                   checked
+                                                   required>
+                                            <input th:if="${fList.status} != disable" class="form-check-input"
+                                                   type="radio"
+                                                   name="status"
+                                                   id="disable"
+                                                   value="disable"
+                                                   required>
+                                            <label class="form-check-label" for="disable">
+                                                Disable
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </div>
+                                <button type="submit" class="btn btn-primary float-right mb-3">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--                Edit_Table_End-->
+                <a th:href="@{'/deletefood/'+${fList.id}}">
+                    <button class="btn btn-danger">
+                        <i class="fa fa-trash-o mr-2" aria-hidden="true"></i>Delete
+                    </button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!--Show_Food_End-->
+
+<div th:replace="master :: footer"></div>
+</body>
+</html>

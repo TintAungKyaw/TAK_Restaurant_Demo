@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="master :: header"></head>
+<body class="bg-muted">
+<div th:replace="master :: navbar"></div>
+
+<!--Create_Rule_Start-->
+<div class="modal fade" id="Create_Rule" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-content form-elegant" tabindex="-1"
+         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div>
+            <div class="btn close" data-dismiss="modal" aria-label="Close">&times;</div>
+            <h1 class="text-center mt-3">Create Rules Here</h1>
+            <form class="container" action="/cr" method="post">
+                <div class="form-group ">
+                    <label for="rule">Rules</label>
+                    <textarea class="form-control" id="rule" name="rule" placeholder="Rules" rows="5" cols="30"
+                              minlength="1" maxlength="250"
+                              required></textarea>
+                </div>
+                <div>
+                    <label>Status</label>
+                    <div class="row">
+                        <div class="form-check col-4 text-center">
+                            <input class="form-check-input" type="radio" name="status" id="enable" value="enable"
+                                   checked="checked" required>
+                            <label class="form-check-label" for="enable">
+                                Enable Rule
+                            </label>
+                        </div>
+                        <div class="form-check col-4 text-center">
+                            <input class="form-check-input" type="radio" name="status" id="disable" value="disable"
+                                   required>
+                            <label class="form-check-label" for="disable">
+                                Disable Rule
+                            </label>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <button type="submit" class="btn btn-primary float-right mb-3">Save Rule</button>
+            </form>
+        </div>
+    </div>
+</div>
+<!--Create_Rule_End-->
+
+<!--Show_Rule_Start-->
+<div class="container mt-5">
+    <table class="table table-striped">
+        <thead class="thead-dark text-center">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Status</th>
+            <th scope="col">Edit</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="rule : ${rule}" class="text-center">
+            <td th:text="${rule.id}"></td>
+            <td th:text="${rule.rule}"></td>
+            <td>
+                <a th:href="@{'/rulestatus/'+${rule.id}}">
+                    <button th:if="${rule.status} == enable" type="button" class="btn btn-primary">On</button>
+                    <button th:if="${rule.status} == disable" type="button" class="btn btn-secondary">Off</button>
+                </a>
+            </td>
+            <td>
+                <button class="btn btn-success" data-toggle="modal"
+                        th:data-target="'#Edit_Rule'+${rule.id}">
+                    <i class="fa fa-pencil mr-2" aria-hidden="true"></i>Edit
+                </button>
+                <!--                Edit_Rule_Start-->
+                <div class="modal fade" th:id="'Edit_Rule'+${rule.id}" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-content form-elegant" tabindex="-1"
+                         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div>
+                            <div class="btn close" data-dismiss="modal" aria-label="Close">&times;</div>
+                            <h1 class="text-center mt-3">Edit Rules Here</h1>
+                            <form class="container" action="/editrule" method="post">
+                                <div class="form-group ">
+                                    <label for="rule">Rule</label>
+                                    <textarea class="form-control" id="rule" name="rule" rows="5" cols="30"
+                                              minlength="1" maxlength="250"
+                                              th:value="${rule.rule}" required></textarea>
+                                </div>
+                                <div>
+                                    <div class="row">
+                                        <div class="form-check col-4 text-center">
+                                            <input type="hidden" name="id" th:value="${rule.id}">
+                                            <input th:if="${rule.status} == enable" class="form-check-input"
+                                                   type="radio" name="status" id="enable" value="enable" checked
+                                                   required>
+                                            <input th:if="${rule.status} != enable" class="form-check-input"
+                                                   type="radio" name="status" id="enable" value="enable"
+                                                   required>
+                                            <label class="form-check-label" for="enable">
+                                                Enable Rule
+                                            </label>
+                                        </div>
+                                        <div class="form-check col-4 text-center">
+                                            <input th:if="${rule.status} == disable" class="form-check-input"
+                                                   type="radio"
+                                                   name="status"
+                                                   id="disable"
+                                                   value="disable"
+                                                   checked
+                                                   required>
+                                            <input th:if="${rule.status} != disable" class="form-check-input"
+                                                   type="radio"
+                                                   name="status"
+                                                   id="disable"
+                                                   value="disable"
+                                                   required>
+                                            <label class="form-check-label" for="disable">
+                                                Disable Rule
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </div>
+                                <button type="submit" class="btn btn-primary float-right mb-3">Save Rule</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--                Edit_Rule_End-->
+                <a th:href="@{'/deleterule/'+${rule.id}}">
+                    <button class="btn btn-danger">
+                        <i class="fa fa-trash-o mr-2" aria-hidden="true"></i>Delete
+                    </button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!--Show_Rule_End-->
+
+<div th:replace="master :: footer"></div>
+</body>
+</html>

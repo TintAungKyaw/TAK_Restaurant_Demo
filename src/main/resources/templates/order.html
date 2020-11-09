@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="master :: header"></head>
+<body class="bg-muted">
+<div th:replace="master :: navbar"></div>
+
+<!--Show_Food_Start-->
+<div class="container mt-5">
+    <table class="table table-striped">
+        <thead class="thead-dark text-center">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Order</th>
+            <th scope="col">Paid Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="table : ${table}" th:if="${table.status} == enable" class="text-center">
+            <td th:text="${table.id}"></td>
+            <td>
+                <button th:class="${table.active} == null ? 'btn btn-primary rounded-pill' : 'btn btn-success rounded-pill'"
+                        th:text="${table.name}"></button>
+            </td>
+            <td><a th:href="@{'/orderlist/'+${table.id}}">
+                <button class="btn btn-info rounded-pill">Order Food</button>
+            </a></td>
+            <td>
+                <button th:if="${table.active} == null" th:onclick="|clickPaid('${table.id}')|"
+                        class="btn btn-primary rounded-pill"
+                        data-toggle="modal"
+                        th:data-target="'#msg'+${table.id}">Paid
+                </button>
+                <button th:if="${table.active} == customer" th:onclick="|clickPaid('${table.id}')|"
+                        class="btn btn-success rounded-pill"
+                        data-toggle="modal"
+                        th:data-target="'#cash'+${table.id}">Paid
+                </button>
+                <!--Edit_Table_Start-->
+                <div class="modal fade" th:id="'cash'+${table.id}" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-content form-elegant" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div>
+                            <div class="btn close" data-dismiss="modal" aria-label="Close">&times;</div>
+                            <h3 class="text-center mt-3">TAK Restaurant</h3>
+                            <h5 class="border-bottom ml-3" th:text="${table.name}"></h5>
+                            <table class="table table-sm" th:id="${table.id}">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col" class="text-center">Name</th>
+                                    <th scope="col" class="text-center">Price</th>
+                                    <th scope="col" class="text-center">Amount</th>
+                                    <th scope="col" class="text-center">Total</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="cf : ${cf}" th:if="${cf.tid} == ${table.id} AND ${cf.paid_status} == 0"
+                                    class="align-middle">
+                                    <td class="text-center" th:text="${cf.f_name}"></td>
+                                    <td class="text-center" th:text="'$ '+${cf.price}"></td>
+                                    <td class="text-center" th:text="${cf.qty}"></td>
+                                    <td class="text-center" th:text="${cf.price}*${cf.qty}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="d-flex justify-content-center h4">
+                                <span>Total :&nbsp;</span>
+                                <span th:id="'val'+${table.id}"></span>
+                            </div>
+                            <div>
+                                <a th:href="'/cashpay/'+${table.id}" class="d-flex justify-content-center">
+                                    <button class="btn btn-primary btn-lg rounded-pill mb-3">Cash Pay</button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Edit_Table_End-->
+                <!--Edit_Table_Start-->
+                <div class="modal fade" th:id="'msg'+${table.id}" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-content form-elegant" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div>
+                            <div class="btn close" data-dismiss="modal" aria-label="Close">&times;</div>
+                            <h3 class="text-center mt-3">TAK Restaurant</h3>
+                            <h5 class="border-bottom ml-3" th:text="${table.name}"></h5>
+                            <table class="table table-sm" id="table">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col" class="text-center">Name</th>
+                                    <th scope="col" class="text-center">Price</th>
+                                    <th scope="col" class="text-center">Amount</th>
+                                    <th scope="col" class="text-center">Total</th>
+                                </tr>
+                                </thead>
+                            </table>
+                            <div class="d-flex justify-content-center h3">
+                                <span>There are no customer in this table.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Edit_Table_End-->
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!--Show_Order_End-->
+
+<script>
+
+    function clickPaid(tb_id) {
+        console.log(tb_id);
+
+        var table = document.getElementById(tb_id), sumVal = 0;
+
+        for (var i = 1; i < table.rows.length; i++) {
+            sumVal = sumVal + parseInt(table.rows[i].cells[3].innerHTML);
+        }
+
+        document.getElementById("val" + tb_id).innerHTML = sumVal;
+        console.log(sumVal);
+    }
+</script>
+<div th:replace="master :: footer"></div>
+</body>
+</html>
